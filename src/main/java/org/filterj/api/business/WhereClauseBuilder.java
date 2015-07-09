@@ -3,9 +3,11 @@ package org.filterj.api.business;
 import org.apache.log4j.Logger;
 import org.filterj.api.Filter;
 import org.filterj.api.business.clauses.*;
+import org.hibernate.annotations.Table;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +40,7 @@ public class WhereClauseBuilder {
 
     public String getClause() {
         List<Clause> clauses = new ArrayList<Clause>();
-        Field[] fields = clazz.getFields();
+        Field[] fields = clazz.getDeclaredFields();
 
         Annotation filterAnnotation;
         for (Field classField : fields) {
@@ -49,7 +51,8 @@ public class WhereClauseBuilder {
                 switch(filter.operator()){
                     case EQUAL:
                     case NOT_EQUAL:
-                        clauses.add(new EqualClause());
+
+                        clauses.add(new EqualClause("".equals(filter.name()) ? checkTableAnnotation(classField) : filter.name()));
                         break;
 
                     case IN:
@@ -91,7 +94,19 @@ public class WhereClauseBuilder {
             }
         }
 
-        return null;
+        return createClause(clauses);
+    }
+
+    private String createClause(List<Clause> clauses){
+
+        StringBuilder clausesBuilder  = new StringBuilder(clauses.get(0).getClause());
+
+        for(int i = 1; i< clauses.size(); i++){
+           clausesBuilder.append(" AND " + clauses.get(i).getClause());
+        }
+
+        return clausesBuilder.toString();
+
     }
 
     private synchronized static Logger log() {
@@ -99,5 +114,33 @@ public class WhereClauseBuilder {
             logger = Logger.getLogger(WhereClauseBuilder.class);
         }
         return logger;
+    }
+
+    private String checkTableAnnotation(Field field){
+            Annotation filterAnnotation = null;
+
+        try {
+            Class tableClass = Class.forName("org.hibernate.annotations.Table");
+            if ((filterAnnotation = field.getAnnotation(tableClass)) != null) {
+                return String.valueOf(filterAnnotation.getClass().getMethod("name", null).invoke(String.class, null));
+            }   else{
+                try {
+                    throw new Exception("tabkle name not found");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
     }
 }

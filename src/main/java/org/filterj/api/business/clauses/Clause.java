@@ -10,4 +10,6 @@ package org.filterj.api.business.clauses;
 public interface Clause {
 
     String getClause();
+
+    boolean isValid();
 }

@@ -11,4 +11,8 @@ public class BetweenClause implements Clause {
     public String getClause() {
         return null;
     }
+
+    public boolean isValid() {
+        return false;
+    }
 }
