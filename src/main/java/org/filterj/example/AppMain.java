@@ -20,7 +20,7 @@ public class AppMain {
 		 * Create Employee1
 		 */
 		Employee employee1 = new Employee();
-		employee1.setName("Han Yenn");
+		employee1.setName("Mehdi Afsari");
 		employee1.setJoiningDate(new LocalDate(2010, 10, 10));
 		employee1.setSalary(new BigDecimal(10000));
 		employee1.setSsn("ssn00000001");
@@ -29,7 +29,7 @@ public class AppMain {
 		 * Create Employee2
 		 */
 		Employee employee2 = new Employee();
-		employee2.setName("Dan Thomas");
+		employee2.setName("Ali Alizadeh");
 		employee2.setJoiningDate(new LocalDate(2012, 11, 11));
 		employee2.setSalary(new BigDecimal(20000));
 		employee2.setSsn("ssn00000002");
