@@ -12,8 +12,8 @@ import java.lang.reflect.Field;
  * @since 1.0.0
  */
 public class GreaterEqualClause extends Clause {
-    public GreaterEqualClause(Field annotatedFilterField, QueryType queryType) {
-        super(annotatedFilterField,queryType);
+    public GreaterEqualClause(Field beanField, QueryType queryType) {
+        super(beanField,queryType);
     }
 
     public ClauseBean getClause() {
@@ -21,7 +21,7 @@ public class GreaterEqualClause extends Clause {
         return new ClauseBean(String.format(format, getColumnName(), getParamKey()), getIgnoreValues());
     }
 
-    public boolean isValid() {
+    protected final boolean isValid() {
         return false;
     }
 }

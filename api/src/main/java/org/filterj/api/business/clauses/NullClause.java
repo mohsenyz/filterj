@@ -13,8 +13,8 @@ import java.lang.reflect.Field;
  */
 public class NullClause extends Clause {
 
-    public NullClause(Field annotatedFilterField, QueryType queryType) {
-        super(annotatedFilterField,queryType);
+    public NullClause(Field beanField, QueryType queryType) {
+        super(beanField, queryType);
     }
 
     public ClauseBean getClause() {
@@ -22,7 +22,7 @@ public class NullClause extends Clause {
         return new ClauseBean(String.format(format, getColumnName(), getParamKey()), getIgnoreValues());
     }
 
-    public boolean isValid() {
+    protected final boolean isValid() {
         return false;
     }
 }

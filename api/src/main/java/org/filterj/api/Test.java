@@ -10,7 +10,7 @@ package org.filterj.api;
 @Filterable
 public class Test {
 
-    @Filter(column = "NAME", paramKey = ":name")
+    @Filter(column = "NAME", paramKey = ":filedName")
     private String name;
 
     @Filter(column = "F_NAME", paramKey = ":fName")

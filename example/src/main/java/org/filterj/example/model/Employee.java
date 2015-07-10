@@ -1,7 +1,7 @@
 package org.filterj.example.model;
 
 import org.filterj.api.Filter;
-import org.filterj.api.FilterBetween;
+import org.filterj.api.FilterWith;
 import org.filterj.api.Filterable;
 import org.filterj.api.Operator;
 import org.hibernate.annotations.Type;
@@ -28,14 +28,15 @@ public class Employee {
     private LocalDate joiningDate;
 
     @Column(name = "SALARY", nullable = false)
-    @Filter(operator = Operator.BETWEEN, chain = "less" , paramKey = ":salaryMin")
+    @Filter(operator = Operator.BETWEEN, paramKey = ":salaryMin")
+    @FilterWith(filedName ="less" , paramKey = ":salaryMax" )
     private BigDecimal salary;
 
     @Column(name = "SSN", unique = true, nullable = false)
+    @Filter(operator = Operator.NOT_EQUAL, column = "SSN", paramKey = ":ssn")
     private String ssn;
 
     @Transient
-    @FilterBetween(paramKey = ":salaryMax")
     private BigDecimal less;
 
     public int getId() {

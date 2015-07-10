@@ -15,18 +15,18 @@ import java.lang.reflect.Field;
 public abstract class Clause {
 
     protected QueryType queryType;
-    private Field entityField;
+    protected Field beanField;
     private Filter filter;
 
-    public Clause(Field entityField, QueryType queryType) {
-        this.entityField = entityField;
-        this.filter = (Filter) entityField.getAnnotation(Filter.class);
+    public Clause(Field beanField, QueryType queryType) {
+        this.beanField = beanField;
+        this.filter = (Filter) beanField.getAnnotation(Filter.class);
         this.queryType = queryType;
     }
 
     public abstract ClauseBean getClause();
 
-    public abstract boolean isValid();
+    protected abstract boolean isValid();
 
     //TODO for org.filterj.example ? OR :tableName
     public String getParamKey() {
@@ -40,7 +40,7 @@ public abstract class Clause {
     protected String getColumnName() {
         String columnName = filter.column();
         if ("".equals(columnName)) {
-            columnName = entityField.getName();
+            columnName = beanField.getName();
         }
         return columnName;
     }

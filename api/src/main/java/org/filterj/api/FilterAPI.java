@@ -3,9 +3,6 @@ package org.filterj.api;
 import org.filterj.api.business.WhereClauseBuilder;
 import org.filterj.api.business.clauses.ClauseBean;
 import org.reflections.Reflections;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

@@ -13,8 +13,8 @@ import java.lang.reflect.Field;
  */
 public class EqualClause extends Clause {
 
-    public EqualClause(Field annotatedFilterField,QueryType queryType) {
-        super(annotatedFilterField, queryType);
+    public EqualClause(Field beanField,QueryType queryType) {
+        super(beanField, queryType);
     }
 
 
@@ -35,7 +35,7 @@ public class EqualClause extends Clause {
         return new ClauseBean(clause, getIgnoreValues());
     }
 
-    public boolean isValid() {
+    protected final boolean isValid() {
         return false;
     }
 }

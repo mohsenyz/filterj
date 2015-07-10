@@ -13,8 +13,8 @@ import java.lang.reflect.Field;
  */
 public class LesserClause extends Clause {
 
-    public LesserClause(Field annotatedFilterField, QueryType queryType) {
-        super(annotatedFilterField,queryType);
+    public LesserClause(Field beanField, QueryType queryType) {
+        super(beanField, queryType);
     }
 
     public ClauseBean getClause() {
@@ -22,7 +22,7 @@ public class LesserClause extends Clause {
         return new ClauseBean(String.format(format, getColumnName(), getParamKey()), getIgnoreValues());
     }
 
-    public boolean isValid() {
+    protected final boolean isValid() {
         return false;
     }
 }

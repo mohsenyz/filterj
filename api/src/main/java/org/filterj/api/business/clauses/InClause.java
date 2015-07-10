@@ -13,17 +13,16 @@ import java.lang.reflect.Field;
  */
 public class InClause extends Clause {
 
-    public InClause(Field annotatedFilterField, QueryType queryType) {
-        super(annotatedFilterField,queryType);
+    public InClause(Field beanField, QueryType queryType) {
+        super(beanField, queryType);
     }
 
     public ClauseBean getClause() {
-
         String format = "(%s IN (%s))";
         return new ClauseBean(String.format(format, getColumnName(), "%s"), getIgnoreValues());
     }
 
-    public boolean isValid() {
+    protected final boolean isValid() {
         return false;
     }
 }

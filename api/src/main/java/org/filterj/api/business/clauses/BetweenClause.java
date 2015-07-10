@@ -1,5 +1,6 @@
 package org.filterj.api.business.clauses;
 
+import org.filterj.api.FilterWith;
 import org.filterj.api.business.QueryType;
 
 import java.lang.reflect.Field;
@@ -13,16 +14,28 @@ import java.lang.reflect.Field;
  */
 public class BetweenClause extends Clause {
 
-    public BetweenClause(Field annotatedFilterField, QueryType queryType) {
-        super(annotatedFilterField, queryType);
+    private final FilterWith filterWith;
+
+    public BetweenClause(Field beanField, QueryType queryType) {
+        super(beanField, queryType);
+        filterWith = (FilterWith) beanField.getAnnotation(FilterWith.class);
     }
 
     public ClauseBean getClause() {
-
-        return null;
+        String format = "(between (%s AND %s))";
+        return new ClauseBean(String.format(format, getParamKey(), filterWith.paramKey()), getIgnoreValues());
     }
 
-    public boolean isValid() {
+    protected final boolean isValid() {
+        if (filterWith == null) {
+            try {
+                throw new Exception("FilterWith should use in combination with a Filter which has BETWEEN operator ");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        //TODO throwing exception for field name uncompatibility should happen at runtime
+        //TODO when the program is binding value
         return false;
     }
 }

@@ -29,6 +29,4 @@ public @interface Filter {
 
     String[] ignoreValues() default {};
 
-    String chain() default "";
-
 }

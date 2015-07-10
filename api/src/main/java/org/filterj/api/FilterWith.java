@@ -15,6 +15,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.FIELD})
-public @interface FilterBetween {
+public @interface FilterWith {
     String paramKey();
+    String filedName();
 }
