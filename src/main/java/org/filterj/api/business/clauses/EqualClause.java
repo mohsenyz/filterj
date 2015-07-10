@@ -2,6 +2,8 @@ package org.filterj.api.business.clauses;
 
 import org.filterj.api.business.QueryType;
 
+import java.lang.reflect.Field;
+
 /**
  * @author Mehdi Afsari Kashi
  * @version 1.0.0
@@ -9,35 +11,27 @@ import org.filterj.api.business.QueryType;
  *          Creation Date: 2015/07/08
  * @since 1.0.0
  */
-public class EqualClause implements Clause {
-    private String columnName;
-    private QueryType queryType;
-
-    //SQL constructor
-    public EqualClause(String columnName) {
-        this.columnName = columnName;
+public class EqualClause extends Clause {
+    public EqualClause(Field annotatedFilterField,QueryType queryType) {
+        super(annotatedFilterField, queryType);
     }
 
-    //JPQL constructor
-    public EqualClause(String entityName, String parameterName){
 
-    }
-
-    public String getClause() {
+    public ClauseBean getClause() {
 
         String clause = "";
 
         switch(queryType){
             case SQL:
                 String format = "(%s = ?)";
-                clause =  String.format(format, columnName);
+                clause =  String.format(format, getColumnName());
                 break;
 
             case JPQL:
                 break;
         }
 
-        return clause;
+        return new ClauseBean(clause, getIgnoreValues());
     }
 
     public boolean isValid() {

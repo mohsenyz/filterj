@@ -1,5 +1,9 @@
 package org.filterj.api.business.clauses;
 
+import org.filterj.api.business.QueryType;
+
+import java.lang.reflect.Field;
+
 /**
  * @author Mehdi Afsari Kashi
  * @version 1.0.0
@@ -7,8 +11,12 @@ package org.filterj.api.business.clauses;
  *          Creation Date: 2015/07/08
  * @since 1.0.0
  */
-public class GreaterClause implements Clause {
-    public String getClause() {
+public class GreaterClause extends Clause {
+    public GreaterClause(Field annotatedFilterField, QueryType queryType) {
+        super(annotatedFilterField,queryType);
+    }
+
+    public ClauseBean getClause() {
         return null;
     }
 

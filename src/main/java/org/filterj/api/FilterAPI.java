@@ -1,10 +1,12 @@
 package org.filterj.api;
 
 import org.filterj.api.business.WhereClauseBuilder;
+import org.filterj.api.business.clauses.ClauseBean;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +50,7 @@ public class FilterAPI {
 
 
     private static String startTransaction(Class<?> clazz) {
-        String whereClauseBuilder = new WhereClauseBuilder(clazz).getClause();
+        Map<Class<?>, Map<Field, ClauseBean>> map = new WhereClauseBuilder(clazz).getClause();
         return "salam";
     }
 }

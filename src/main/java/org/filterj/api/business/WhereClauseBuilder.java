@@ -3,13 +3,13 @@ package org.filterj.api.business;
 import org.apache.log4j.Logger;
 import org.filterj.api.Filter;
 import org.filterj.api.business.clauses.*;
-import org.hibernate.annotations.Table;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mehdi Afsari Kashi
@@ -38,11 +38,14 @@ public class WhereClauseBuilder {
     }
 
 
-    public String getClause() {
-        List<Clause> clauses = new ArrayList<Clause>();
+    public Map<Class<?>, Map<Field, ClauseBean>> getClause() {
         Field[] fields = clazz.getDeclaredFields();
 
         Annotation filterAnnotation;
+        Map<Field, ClauseBean> mapFieldAndQuery = new HashMap<Field, ClauseBean>();
+        Map<Class<?>, Map<Field, ClauseBean>> finalMap=  new HashMap<Class<?>, Map<Field, ClauseBean>>();
+        ClauseBean clauseBean = null;
+
         for (Field classField : fields) {
             if ((filterAnnotation = classField.getAnnotation(Filter.class)) != null) {
                 new Validations(classField).checkValidity();
@@ -51,69 +54,63 @@ public class WhereClauseBuilder {
                 switch(filter.operator()){
                     case EQUAL:
                     case NOT_EQUAL:
-
-                        clauses.add(new EqualClause("".equals(filter.name()) ? checkTableAnnotation(classField) : filter.name()));
+                        clauseBean = new EqualClause(classField, QueryType.SQL).getClause();
                         break;
 
                     case IN:
                     case NOT_IN:
-                        clauses.add(new InClause());
+                        clauseBean = new InClause(classField, QueryType.SQL).getClause();
                         break;
 
                     case BETWEEN:
                     case NOT_BETWEEN:
-                        clauses.add(new BetweenClause());
+                        clauseBean = new BetweenClause(classField, QueryType.SQL).getClause();
                         break;
 
                     case GREATER:
-                        clauses.add(new GreaterClause());
+                        clauseBean = new GreaterClause(classField, QueryType.SQL).getClause();
                         break;
 
                     case LESSER:
-                        clauses.add(new LesserClause());
+                        clauseBean = new LesserClause(classField, QueryType.SQL).getClause();
                         break;
 
                     case GREATER_EQUAL:
-                        clauses.add(new GreaterEqualClause());
+                        clauseBean = new GreaterEqualClause(classField, QueryType.SQL).getClause();
                         break;
 
                     case LESS_EQUAL:
-                        clauses.add(new LessEqualClause());
+                        clauseBean = new LessEqualClause(classField, QueryType.SQL).getClause();
                         break;
 
                     case LIKE:
                     case NOT_LIKE:
-                        clauses.add(new LikeClause());
+                        clauseBean = new LikeClause(classField, QueryType.SQL).getClause();
                         break;
 
                     case IS_NULL:
                     case IS_NOT_NULL:
-                        clauses.add(new NullClause());
+                        clauseBean = new NullClause(classField, QueryType.SQL).getClause();
                         break;
                 }
+                mapFieldAndQuery.put(classField, clauseBean);
             }
+            finalMap.put(clazz, mapFieldAndQuery);
         }
 
-        return createClause(clauses);
+        return finalMap;
     }
 
     private String createClause(List<Clause> clauses){
 
-        StringBuilder clausesBuilder  = new StringBuilder(clauses.get(0).getClause());
+        //StringBuilder clausesBuilder  = new StringBuilder(clauses.get(0).getClause());
 
-        for(int i = 1; i< clauses.size(); i++){
-           clausesBuilder.append(" AND " + clauses.get(i).getClause());
-        }
+//        for(int i = 1; i< clauses.size(); i++){
+//           clausesBuilder.append(" AND " + clauses.get(i).getClause());
+//        }
 
-        return clausesBuilder.toString();
+        return null;/*clausesBuilder.toString();*/
 
-    }
-
-    private synchronized static Logger log() {
-        if (logger == null) {
-            logger = Logger.getLogger(WhereClauseBuilder.class);
-        }
-        return logger;
     }
 
     private String checkTableAnnotation(Field field){
@@ -139,8 +136,13 @@ public class WhereClauseBuilder {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-
         return null;
+    }
 
+    private synchronized static Logger log() {
+        if (logger == null) {
+            logger = Logger.getLogger(WhereClauseBuilder.class);
+        }
+        return logger;
     }
 }

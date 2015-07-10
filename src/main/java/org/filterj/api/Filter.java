@@ -29,5 +29,6 @@ public @interface Filter {
     String name() default "";
     String regex() default "";
     int groupUniqueKey() default 0;
-    String ignore() default "";
+    String[] ignoreValue() default "";
+
 }
