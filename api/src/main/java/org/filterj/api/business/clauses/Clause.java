@@ -28,7 +28,7 @@ public abstract class Clause {
 
     public abstract boolean isValid();
 
-    //TODO for example ? OR :tableName
+    //TODO for org.filterj.example ? OR :tableName
     public String getParamKey() {
         return filter.paramKey();
     }

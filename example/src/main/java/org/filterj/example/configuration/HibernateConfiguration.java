@@ -17,7 +17,7 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan({ "org.filterj.example.configuration" })
+@ComponentScan({"org.filterj.example.configuration"})
 @PropertySource(value = { "classpath:application.properties" })
 public class HibernateConfiguration {
 
