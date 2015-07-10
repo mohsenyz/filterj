@@ -12,12 +12,14 @@ import java.lang.reflect.Field;
  * @since 1.0.0
  */
 public class GreaterClause extends Clause {
+
     public GreaterClause(Field annotatedFilterField, QueryType queryType) {
         super(annotatedFilterField,queryType);
     }
 
     public ClauseBean getClause() {
-        return null;
+        String format = "(%s > %s)";
+        return new ClauseBean(String.format(format, getColumnName(), getParamKey()), getIgnoreValues());
     }
 
     public boolean isValid() {

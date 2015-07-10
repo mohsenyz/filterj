@@ -18,7 +18,9 @@ public class InClause extends Clause {
     }
 
     public ClauseBean getClause() {
-        return null;
+
+        String format = "(%s IN (%s))";
+        return new ClauseBean(String.format(format, getColumnName(), "%s"), getIgnoreValues());
     }
 
     public boolean isValid() {

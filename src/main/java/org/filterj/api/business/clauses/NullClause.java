@@ -18,7 +18,8 @@ public class NullClause extends Clause {
     }
 
     public ClauseBean getClause() {
-        return null;
+        String format = "(%s > %s)";
+        return new ClauseBean(String.format(format, getColumnName(), getParamKey()), getIgnoreValues());
     }
 
     public boolean isValid() {

@@ -38,7 +38,7 @@ public class WhereClauseBuilder {
     }
 
 
-    public Map<Class<?>, Map<Field, ClauseBean>> getClause() {
+    public Map<Field, ClauseBean> getClause() {
         Field[] fields = clazz.getDeclaredFields();
 
         Annotation filterAnnotation;
@@ -92,13 +92,16 @@ public class WhereClauseBuilder {
                     case IS_NOT_NULL:
                         clauseBean = new NullClause(classField, QueryType.SQL).getClause();
                         break;
+
+
+
                 }
                 mapFieldAndQuery.put(classField, clauseBean);
+
             }
-            finalMap.put(clazz, mapFieldAndQuery);
         }
 
-        return finalMap;
+        return mapFieldAndQuery;
     }
 
     private String createClause(List<Clause> clauses){
@@ -119,10 +122,10 @@ public class WhereClauseBuilder {
         try {
             Class tableClass = Class.forName("org.hibernate.annotations.Table");
             if ((filterAnnotation = field.getAnnotation(tableClass)) != null) {
-                return String.valueOf(filterAnnotation.getClass().getMethod("name", null).invoke(String.class, null));
+                return String.valueOf(filterAnnotation.getClass().getMethod("tableName", null).invoke(String.class, null));
             }   else{
                 try {
-                    throw new Exception("tabkle name not found");
+                    throw new Exception("tabkle tableName not found");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

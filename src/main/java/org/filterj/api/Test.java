@@ -9,4 +9,10 @@ package org.filterj.api;
  */
 @Filterable
 public class Test {
+
+    @Filter(column = "NAME", paramKey = ":name")
+    private String name;
+
+    @Filter(column = "F_NAME", paramKey = ":fName")
+    private String familyName;
 }

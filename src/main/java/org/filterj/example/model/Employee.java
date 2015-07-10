@@ -1,7 +1,9 @@
 package org.filterj.example.model;
 
 import org.filterj.api.Filter;
+import org.filterj.api.FilterBetween;
 import org.filterj.api.Filterable;
+import org.filterj.api.Operator;
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDate;
 
@@ -26,11 +28,15 @@ public class Employee {
     private LocalDate joiningDate;
 
     @Column(name = "SALARY", nullable = false)
-    @Filter
+    @Filter(operator = Operator.BETWEEN, chain = "less" , paramKey = ":salaryMin")
     private BigDecimal salary;
 
     @Column(name = "SSN", unique = true, nullable = false)
     private String ssn;
+
+    @Transient
+    @FilterBetween(paramKey = ":salaryMax")
+    private BigDecimal less;
 
     public int getId() {
         return id;
@@ -102,7 +108,7 @@ public class Employee {
 
     @Override
     public String toString() {
-        return "Employee [id=" + id + ", name=" + name + ", joiningDate="
+        return "Employee [id=" + id + ", tableName=" + name + ", joiningDate="
                 + joiningDate + ", salary=" + salary + ", ssn=" + ssn + "]";
     }
 }

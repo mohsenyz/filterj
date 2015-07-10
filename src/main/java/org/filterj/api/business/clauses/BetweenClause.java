@@ -18,6 +18,7 @@ public class BetweenClause extends Clause {
     }
 
     public ClauseBean getClause() {
+
         return null;
     }
 

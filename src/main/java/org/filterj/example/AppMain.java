@@ -1,5 +1,6 @@
 package org.filterj.example;
 
+import org.filterj.api.FilterAPI;
 import org.filterj.example.configuration.AppConfig;
 import org.filterj.example.model.Employee;
 import org.filterj.example.service.EmployeeService;
@@ -13,6 +14,7 @@ import java.util.List;
 public class AppMain {
 
 	public static void main(String args[]) {
+
 		AbstractApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
 		EmployeeService service = (EmployeeService) context.getBean("employeeService");
 
@@ -68,6 +70,8 @@ public class AppMain {
 		for (Employee emp : employeeList) {
 			System.out.println(emp);
 		}
+
+		FilterAPI.print();
 
 		context.close();
 	}

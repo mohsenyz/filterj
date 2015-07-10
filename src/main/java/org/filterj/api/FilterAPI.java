@@ -20,25 +20,30 @@ import java.util.Map;
 public class FilterAPI {
 
     private static volatile FilterAPI filterAPI = new FilterAPI();
-    private static Map<Class<?>, String> map = boot();
+    private static Map<Class<?>, Map<Field, ClauseBean>> map = null;
 
-    private static synchronized Map boot() {
+    private static synchronized void boot() {
+
         ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
         scanner.addIncludeFilter(new AnnotationTypeFilter(Filterable.class, true));
 
         for (BeanDefinition bd : scanner.findCandidateComponents("")) {
             try {
-                startTransaction(Class.forName(bd.getBeanClassName()));
+                map.put(Class.forName(bd.getBeanClassName()), createFieldClauseMap(Class.forName(bd.getBeanClassName())));
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
+    }
 
-        return map = new HashMap<Class<?>, String>();
+    private static Map<Field, ClauseBean> createFieldClauseMap(Class<?> clazz){
+          return new WhereClauseBuilder(clazz).getClause();
     }
 
     public static synchronized FilterAPI init() {
-        if (map == null) {
+
+        if(map == null){
+            map = new HashMap<Class<?>, Map<Field, ClauseBean>>();
             boot();
         }
 
@@ -49,8 +54,26 @@ public class FilterAPI {
     }
 
 
-    private static String startTransaction(Class<?> clazz) {
-        Map<Class<?>, Map<Field, ClauseBean>> map = new WhereClauseBuilder(clazz).getClause();
-        return "salam";
+    public static void print() {
+
+        String entity;
+        Map<Field, ClauseBean> mapFields;
+        for (Map.Entry<Class<?>, Map<Field, ClauseBean>> entry : map.entrySet())  {
+            entity = entry.getKey().getName();
+            System.out.println(entity + "\n");
+            System.out.println("-----------------------------\n");
+
+            mapFields = entry.getValue();
+
+            for(Map.Entry<Field, ClauseBean> entry1 : mapFields.entrySet()){
+                System.out.println(entry1.getKey().getName() + ":\t" + entry1.getValue().getClause() + "\n");
+            }
+
+            System.out.println("\n \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \n");
+
+        }
+
+
+
     }
 }

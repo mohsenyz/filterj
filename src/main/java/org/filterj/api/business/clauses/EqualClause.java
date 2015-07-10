@@ -12,6 +12,7 @@ import java.lang.reflect.Field;
  * @since 1.0.0
  */
 public class EqualClause extends Clause {
+
     public EqualClause(Field annotatedFilterField,QueryType queryType) {
         super(annotatedFilterField, queryType);
     }
@@ -23,8 +24,8 @@ public class EqualClause extends Clause {
 
         switch(queryType){
             case SQL:
-                String format = "(%s = ?)";
-                clause =  String.format(format, getColumnName());
+                String format = "(%s = %s)";
+                clause =  String.format(format, getColumnName(), getParamKey());
                 break;
 
             case JPQL:

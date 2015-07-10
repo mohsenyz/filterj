@@ -1,5 +1,6 @@
 package org.filterj.api.business.clauses;
 
+import org.filterj.api.Filter;
 import org.filterj.api.business.QueryType;
 
 import java.lang.reflect.Field;
@@ -14,12 +15,12 @@ import java.lang.reflect.Field;
 public abstract class Clause {
 
     protected QueryType queryType;
-    private Field annotatedFilterField;
-    private String columnName;
-    private String [] ignoreValues;
+    private Field entityField;
+    private Filter filter;
 
-    public Clause(Field annotatedFilterField, QueryType queryType){
-        this.annotatedFilterField = annotatedFilterField;
+    public Clause(Field entityField, QueryType queryType) {
+        this.entityField = entityField;
+        this.filter = (Filter) entityField.getAnnotation(Filter.class);
         this.queryType = queryType;
     }
 
@@ -27,16 +28,20 @@ public abstract class Clause {
 
     public abstract boolean isValid();
 
-    //TODO for example ? OR :name
-    public String getParameterKeyName(){
-        return null;
+    //TODO for example ? OR :tableName
+    public String getParamKey() {
+        return filter.paramKey();
     }
 
     protected String[] getIgnoreValues() {
-        return ignoreValues;
+        return filter.ignoreValues();
     }
 
-    protected String getColumnName(){
-        return null;
+    protected String getColumnName() {
+        String columnName = filter.column();
+        if ("".equals(columnName)) {
+            columnName = entityField.getName();
+        }
+        return columnName;
     }
 }

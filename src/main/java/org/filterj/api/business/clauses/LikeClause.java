@@ -18,7 +18,8 @@ public class LikeClause extends Clause {
     }
 
     public ClauseBean getClause() {
-        return null;
+        String format = "(%s LIKE %s)";
+        return new ClauseBean(String.format(format, getColumnName(), getParamKey()), getIgnoreValues());
     }
 
     public boolean isValid() {
