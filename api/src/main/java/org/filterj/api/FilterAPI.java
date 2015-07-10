@@ -2,6 +2,7 @@ package org.filterj.api;
 
 import org.filterj.api.business.WhereClauseBuilder;
 import org.filterj.api.business.clauses.ClauseBean;
+import org.reflections.Reflections;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
@@ -9,6 +10,7 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Mehdi Afsari Kashi
@@ -24,15 +26,11 @@ public class FilterAPI {
 
     private static synchronized void boot() {
 
-        ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
-        scanner.addIncludeFilter(new AnnotationTypeFilter(Filterable.class, true));
+        Reflections reflections = new Reflections("");
+        Set<Class<?>> filterableAnnotated = reflections.getTypesAnnotatedWith(Filterable.class);
 
-        for (BeanDefinition bd : scanner.findCandidateComponents("")) {
-            try {
-                map.put(Class.forName(bd.getBeanClassName()), createFieldClauseMap(Class.forName(bd.getBeanClassName())));
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+        for(Class<?> clazz : filterableAnnotated){
+            map.put(clazz,createFieldClauseMap(clazz));
         }
     }
 
