@@ -13,13 +13,13 @@ import java.lang.reflect.Field;
  */
 public class LikeClause extends Clause {
 
-    public LikeClause(Field beanField, QueryType queryType) {
-        super(beanField, queryType);
+    public LikeClause(Field beanField, QueryType queryType, boolean notFlag) {
+        super(beanField, queryType, notFlag);
     }
 
     public ClauseBean getClause() {
-        String format = "(%s LIKE %s)";
-        return new ClauseBean(String.format(format, getColumnName(), getParamKey()), getIgnoreValues());
+        String format = "(%s%sLIKE %s)";
+        return new ClauseBean(String.format(format, getColumnName(), getFlag(), getParamKey()), getIgnoreValues());
     }
 
     protected final boolean isValid() {

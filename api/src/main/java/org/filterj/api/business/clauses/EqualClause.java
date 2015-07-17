@@ -13,8 +13,8 @@ import java.lang.reflect.Field;
  */
 public class EqualClause extends Clause {
 
-    public EqualClause(Field beanField,QueryType queryType) {
-        super(beanField, queryType);
+    public EqualClause(Field beanField, QueryType queryType, boolean notFlag) {
+        super(beanField, queryType, notFlag);
     }
 
 
@@ -22,10 +22,10 @@ public class EqualClause extends Clause {
 
         String clause = "";
 
-        switch(queryType){
+        switch (queryType) {
             case SQL:
-                String format = "(%s = %s)";
-                clause =  String.format(format, getColumnName(), getParamKey());
+                String format = "(%s %s %s)";
+                clause = String.format(format, getColumnName(), isNotFlag() ? "<>" : "=", getParamKey());
                 break;
 
             case JPQL:

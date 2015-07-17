@@ -14,7 +14,7 @@ import java.lang.reflect.Field;
 public class GreaterClause extends Clause {
 
     public GreaterClause(Field beanField, QueryType queryType) {
-        super(beanField,queryType);
+        super(beanField,queryType,false);
     }
 
     public ClauseBean getClause() {

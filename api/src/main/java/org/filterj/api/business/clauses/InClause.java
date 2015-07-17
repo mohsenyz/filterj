@@ -13,13 +13,13 @@ import java.lang.reflect.Field;
  */
 public class InClause extends Clause {
 
-    public InClause(Field beanField, QueryType queryType) {
-        super(beanField, queryType);
+    public InClause(Field beanField, QueryType queryType, boolean notFlag) {
+        super(beanField, queryType, notFlag);
     }
 
     public ClauseBean getClause() {
-        String format = "(%s IN (%s))";
-        return new ClauseBean(String.format(format, getColumnName(), "%s"), getIgnoreValues());
+        String format = "(%s%sIN (%s))";
+        return new ClauseBean(String.format(format, getColumnName(),getFlag(), "%s"), getIgnoreValues());
     }
 
     protected final boolean isValid() {

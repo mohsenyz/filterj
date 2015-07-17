@@ -14,11 +14,12 @@ import java.lang.reflect.Field;
  */
 public abstract class Clause {
 
+    private boolean notFlag;
     protected QueryType queryType;
     protected Field beanField;
     private Filter filter;
 
-    public Clause(Field beanField, QueryType queryType) {
+    public Clause(Field beanField, QueryType queryType, boolean notFlag) {
         this.beanField = beanField;
         this.filter = (Filter) beanField.getAnnotation(Filter.class);
         this.queryType = queryType;
@@ -43,5 +44,13 @@ public abstract class Clause {
             columnName = beanField.getName();
         }
         return columnName;
+    }
+
+    public String getFlag() {
+        return notFlag ? " NOT " : " ";
+    }
+
+    public boolean isNotFlag() {
+        return notFlag;
     }
 }

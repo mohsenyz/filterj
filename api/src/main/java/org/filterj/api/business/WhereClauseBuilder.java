@@ -2,6 +2,7 @@ package org.filterj.api.business;
 
 import org.apache.log4j.Logger;
 import org.filterj.api.Filter;
+import org.filterj.api.Operator;
 import org.filterj.api.business.clauses.*;
 
 import java.lang.annotation.Annotation;
@@ -24,7 +25,6 @@ public class WhereClauseBuilder {
     private static Logger logger = log();
 
 
-
     public WhereClauseBuilder(Class<?> clazz) {
         this.clazz = clazz;
     }
@@ -40,71 +40,81 @@ public class WhereClauseBuilder {
 
     public Map<Field, ClauseBean> getClause() {
         Field[] fields = clazz.getDeclaredFields();
-
         Annotation filterAnnotation;
         Map<Field, ClauseBean> mapFieldAndQuery = new HashMap<Field, ClauseBean>();
-        Map<Class<?>, Map<Field, ClauseBean>> finalMap=  new HashMap<Class<?>, Map<Field, ClauseBean>>();
-        ClauseBean clauseBean = null;
 
         for (Field classField : fields) {
             if ((filterAnnotation = classField.getAnnotation(Filter.class)) != null) {
+                //TODO
                 new Validations(classField).checkValidity();
-
-                Filter filter = (Filter)filterAnnotation;
-                switch(filter.operator()){
-                    case EQUAL:
-                    case NOT_EQUAL:
-                        clauseBean = new EqualClause(classField, QueryType.SQL).getClause();
-                        break;
-
-                    case IN:
-                    case NOT_IN:
-                        clauseBean = new InClause(classField, QueryType.SQL).getClause();
-                        break;
-
-                    case BETWEEN:
-                    case NOT_BETWEEN:
-                        clauseBean = new BetweenClause(classField, QueryType.SQL).getClause();
-                        break;
-
-                    case GREATER:
-                        clauseBean = new GreaterClause(classField, QueryType.SQL).getClause();
-                        break;
-
-                    case LESSER:
-                        clauseBean = new LesserClause(classField, QueryType.SQL).getClause();
-                        break;
-
-                    case GREATER_EQUAL:
-                        clauseBean = new GreaterEqualClause(classField, QueryType.SQL).getClause();
-                        break;
-
-                    case LESS_EQUAL:
-                        clauseBean = new LessEqualClause(classField, QueryType.SQL).getClause();
-                        break;
-
-                    case LIKE:
-                    case NOT_LIKE:
-                        clauseBean = new LikeClause(classField, QueryType.SQL).getClause();
-                        break;
-
-                    case IS_NULL:
-                    case IS_NOT_NULL:
-                        clauseBean = new NullClause(classField, QueryType.SQL).getClause();
-                        break;
-
-
-
-                }
-                mapFieldAndQuery.put(classField, clauseBean);
-
+                Filter filter = (Filter) filterAnnotation;
+                mapFieldAndQuery.put(classField, getClauseBean(classField, filter.operator()));
             }
         }
 
         return mapFieldAndQuery;
     }
 
-    private String createClause(List<Clause> clauses){
+
+    private ClauseBean getClauseBean(Field classField, Operator operator) {
+        ClauseBean clauseBean = null;
+        switch (operator) {
+            case EQUAL:
+                clauseBean = new EqualClause(classField, QueryType.SQL, false).getClause();
+                break;
+
+            case NOT_EQUAL:
+                clauseBean = new EqualClause(classField, QueryType.SQL, true).getClause();
+                break;
+
+            case IN:
+                clauseBean = new InClause(classField, QueryType.SQL, false).getClause();
+                break;
+            case NOT_IN:
+                clauseBean = new InClause(classField, QueryType.SQL, true).getClause();
+                break;
+
+            case BETWEEN:
+                clauseBean = new BetweenClause(classField, QueryType.SQL, false).getClause();
+                break;
+            case NOT_BETWEEN:
+                clauseBean = new BetweenClause(classField, QueryType.SQL, true).getClause();
+                break;
+
+            case GREATER:
+                clauseBean = new GreaterClause(classField, QueryType.SQL).getClause();
+                break;
+
+            case LESSER:
+                clauseBean = new LesserClause(classField, QueryType.SQL).getClause();
+                break;
+
+            case GREATER_EQUAL:
+                clauseBean = new GreaterEqualClause(classField, QueryType.SQL).getClause();
+                break;
+
+            case LESS_EQUAL:
+                clauseBean = new LessEqualClause(classField, QueryType.SQL).getClause();
+                break;
+
+            case LIKE:
+                clauseBean = new LikeClause(classField, QueryType.SQL, false).getClause();
+                break;
+            case NOT_LIKE:
+                clauseBean = new LikeClause(classField, QueryType.SQL, true).getClause();
+                break;
+
+            case IS_NULL:
+                clauseBean = new NullClause(classField, QueryType.SQL, false).getClause();
+                break;
+            case IS_NOT_NULL:
+                clauseBean = new NullClause(classField, QueryType.SQL, true).getClause();
+                break;
+        }
+        return clauseBean;
+    }
+
+    private String createClause(List<Clause> clauses) {
 
         //StringBuilder clausesBuilder  = new StringBuilder(clauses.get(0).getClause());
 
@@ -116,14 +126,14 @@ public class WhereClauseBuilder {
 
     }
 
-    private String checkTableAnnotation(Field field){
-            Annotation filterAnnotation = null;
+    private String checkTableAnnotation(Field field) {
+        Annotation filterAnnotation = null;
 
         try {
             Class tableClass = Class.forName("org.hibernate.annotations.Table");
             if ((filterAnnotation = field.getAnnotation(tableClass)) != null) {
                 return String.valueOf(filterAnnotation.getClass().getMethod("tableName", null).invoke(String.class, null));
-            }   else{
+            } else {
                 try {
                     throw new Exception("tabkle tableName not found");
                 } catch (Exception e) {

@@ -13,7 +13,7 @@ import java.lang.reflect.Field;
  */
 public class GreaterEqualClause extends Clause {
     public GreaterEqualClause(Field beanField, QueryType queryType) {
-        super(beanField,queryType);
+        super(beanField,queryType, false);
     }
 
     public ClauseBean getClause() {

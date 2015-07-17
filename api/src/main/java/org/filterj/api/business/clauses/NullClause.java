@@ -13,13 +13,13 @@ import java.lang.reflect.Field;
  */
 public class NullClause extends Clause {
 
-    public NullClause(Field beanField, QueryType queryType) {
-        super(beanField, queryType);
+    public NullClause(Field beanField, QueryType queryType, boolean notFlag) {
+        super(beanField, queryType, notFlag);
     }
 
     public ClauseBean getClause() {
-        String format = "(%s > %s)";
-        return new ClauseBean(String.format(format, getColumnName(), getParamKey()), getIgnoreValues());
+        String format = "(%s IS%sNULL)";
+        return new ClauseBean(String.format(format, getColumnName(), getFlag()), getIgnoreValues());
     }
 
     protected final boolean isValid() {

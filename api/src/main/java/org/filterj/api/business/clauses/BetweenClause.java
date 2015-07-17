@@ -16,8 +16,8 @@ public class BetweenClause extends Clause {
 
     private final FilterWith filterWith;
 
-    public BetweenClause(Field beanField, QueryType queryType) {
-        super(beanField, queryType);
+    public BetweenClause(Field beanField, QueryType queryType, boolean notFlag) {
+        super(beanField, queryType, notFlag);
         filterWith = (FilterWith) beanField.getAnnotation(FilterWith.class);
     }
 
