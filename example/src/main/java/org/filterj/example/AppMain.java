@@ -72,7 +72,7 @@ public class AppMain {
 		}
 
 		FilterAPI.print();
-
+		System.out.println(FilterAPI.whereBuilder(Employee.class));
 
 		context.close();
 	}

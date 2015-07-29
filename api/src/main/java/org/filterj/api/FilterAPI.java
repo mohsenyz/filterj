@@ -6,6 +6,7 @@ import org.reflections.Reflections;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,38 +17,36 @@ import java.util.Set;
  *          Creation Date: 2015/07/08
  * @since 1.0.0
  */
+
 public class FilterAPI {
 
-    private static volatile FilterAPI filterAPI = new FilterAPI();
+    private static volatile FilterAPI filterAPI = null;
     private static Map<Class<?>, Map<Field, ClauseBean>> map = null;
 
-    private static synchronized void boot() {
-
-        Reflections reflections = new Reflections("");
-        Set<Class<?>> filterableAnnotated = reflections.getTypesAnnotatedWith(Filterable.class);
-
-        for(Class<?> clazz : filterableAnnotated){
-            map.put(clazz,createFieldClauseMap(clazz));
-        }
+    private FilterAPI() {
+        boot();
     }
 
-    private static Map<Field, ClauseBean> createFieldClauseMap(Class<?> clazz) {
-        return new WhereClauseBuilder(clazz).getClause();
-    }
-
-    public static synchronized FilterAPI init() {
-
-        if (map == null) {
-            map = new HashMap<Class<?>, Map<Field, ClauseBean>>();
-            boot();
-        }
-
+    public static FilterAPI init() {
         if (filterAPI == null) {
-            filterAPI = new FilterAPI();
+            synchronized (FilterAPI.class) {
+                if (filterAPI == null) {
+                    filterAPI = new FilterAPI();
+                }
+            }
         }
         return filterAPI;
     }
 
+    private static synchronized void boot() {
+        map = new HashMap<Class<?>, Map<Field, ClauseBean>>();
+        Reflections reflections = new Reflections("");
+        Set<Class<?>> filterableAnnotated = reflections.getTypesAnnotatedWith(Filterable.class);
+
+        for (Class<?> clazz : filterableAnnotated) {
+            map.put(clazz, new WhereClauseBuilder(clazz).getClause());
+        }
+    }
 
     public static void print() {
 
@@ -66,5 +65,26 @@ public class FilterAPI {
 
             System.out.println("\n \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ \n");
         }
+    }
+
+    public static String whereBuilder(Class<?> clazz) {
+        Map<Field, ClauseBean> mapFields;
+        StringBuilder stringBuilder = new StringBuilder();
+
+        Set<Map.Entry<Field, ClauseBean>> filterMap;
+        int temp = 0;
+
+        for (Map.Entry<Class<?>, Map<Field, ClauseBean>> entry :  map.entrySet()) {
+            if (clazz == entry.getKey()) {
+                mapFields = entry.getValue();
+
+                for (Map.Entry<Field, ClauseBean> entry1 : filterMap = mapFields.entrySet()) {
+                    mapFields.entrySet();
+                    temp++;
+                    stringBuilder.append(entry1.getValue().getClause() + (filterMap.size() != temp ? " AND ":""));
+                }
+            }
+        }
+        return stringBuilder.toString();
     }
 }

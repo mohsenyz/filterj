@@ -23,6 +23,7 @@ public abstract class Clause {
         this.beanField = beanField;
         this.filter = (Filter) beanField.getAnnotation(Filter.class);
         this.queryType = queryType;
+        this.notFlag = notFlag;
     }
 
     public abstract ClauseBean getClause();
